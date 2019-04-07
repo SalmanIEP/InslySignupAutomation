@@ -16,7 +16,6 @@ using System.Threading;
 namespace InslySignupAutomationFramework.Steps
 {
     [Binding]
-    
     public sealed class Signup_Page_Steps
     {
         IWebDriver driver;
