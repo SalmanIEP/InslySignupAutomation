@@ -19,6 +19,7 @@ namespace InslySignupAutomationFramework
         private static ExtentTest featureName;
         private static ExtentTest scenario;
         private static ExtentReports extent;
+        public static ExtentTest test;
         // For additional details on SpecFlow hooks see http://go.specflow.org/doc-hooks
         private readonly IObjectContainer _objectContainer;
         public Hooks1(IObjectContainer objectContainer)
@@ -97,14 +98,13 @@ namespace InslySignupAutomationFramework
         [AfterTestRun]
         public static void TearDownReport()
         {
-            //Flush report once test completes
             extent.Flush();
         }
+      
         [BeforeScenario]
         public void Initialize()
         {
             scenario = featureName.CreateNode<Scenario>(ScenarioContext.Current.ScenarioInfo.Title);
-            
         }
        
       

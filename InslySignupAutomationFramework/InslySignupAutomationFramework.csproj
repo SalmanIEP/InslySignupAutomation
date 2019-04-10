@@ -101,6 +101,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\configurations.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>configurations.settings</DependentUpon>
+    </Compile>
     <Compile Include="Features\Insly_SignUp.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -115,6 +120,10 @@
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\configurations.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>configurations.Designer.cs</LastGenOutput>
     </None>
     <None Include="Features\Insly_SignUp.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

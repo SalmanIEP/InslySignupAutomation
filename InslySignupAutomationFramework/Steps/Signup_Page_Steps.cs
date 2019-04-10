@@ -6,7 +6,6 @@ using OpenQA.Selenium;
 using NUnit.Framework;
 using TechTalk.SpecFlow;
 using InslySignupAutomationFramework.Objects_Repo;
-using System.Configuration;
 using OpenQA.Selenium.Chrome;
 using InslySignupAutomationFramework.Helping_methods;
 using OpenQA.Selenium.Interactions;
@@ -25,6 +24,7 @@ namespace InslySignupAutomationFramework.Steps
         string CompanyName;
         string WorkEmail;
         string ManagerName;
+        WebDriverWait wait;
         Actions act;
 
         [Given(@"Go to Sign Up page of Insly")]
@@ -32,12 +32,12 @@ namespace InslySignupAutomationFramework.Steps
         {
             driver = new ChromeDriver();
             help = new Helper(driver);
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            driver.Manage().Window.Maximize();
             action = new Signup_Page(driver);
             help = new Helper(driver);
-            driver.Navigate().GoToUrl("https://signup.insly.com/signup");
-            
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(60);
+            driver.Manage().Window.Maximize();
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(50));
+            driver.Navigate().GoToUrl("https://signup.int.staging.insly.training/signup");
         }
 
         [Then(@"Sign up and start using- title is shown there")]
@@ -45,6 +45,7 @@ namespace InslySignupAutomationFramework.Steps
         {
             string Title = action.heading_title.Text;
             Assert.AreEqual("Sign up and start using", Title);
+           
         }
 
         [When(@"Fill some random unique name in Company name")]
@@ -52,6 +53,7 @@ namespace InslySignupAutomationFramework.Steps
         {
             CompanyName = "Company" + help.RandomString(4);
             action.txt_CompanyName.SendKeys(CompanyName);
+            
         }
 
         [Then(@"All data filled in")]
@@ -59,6 +61,7 @@ namespace InslySignupAutomationFramework.Steps
         {
             string insertedCompanyName = action.txt_CompanyName.GetAttribute("value");
             Assert.AreEqual(CompanyName, insertedCompanyName);
+            
         }
         [Then(@"Chose any country")]
         public void ThenChoseAnyCountry()
@@ -69,7 +72,7 @@ namespace InslySignupAutomationFramework.Steps
         [Then(@"Check address e\.g\.yourname\.incly\.com")]
         public void ThenCheckAddressE_G_Yourname_Incly_Com()
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(3000);
             string InslyAdress = action.Txt_YouInslyAdress.GetAttribute("value");
             Assert.That(InslyAdress, Does.Contain(CompanyName.ToLower()));
         }
@@ -118,7 +121,7 @@ namespace InslySignupAutomationFramework.Steps
         {
             action.link_SuggestaSecurePassword.Click();
             String GenratedPassword = action.Secure_Password.Text;
-            Console.WriteLine("The Secure Password is successfully genrated and is "+GenratedPassword);
+            TestContext.Out.WriteLine("The Secure Password is successfully genrated and is "+GenratedPassword);
             action.Btn_ok.Click();
         }
 
@@ -144,8 +147,6 @@ namespace InslySignupAutomationFramework.Steps
         {
             action.link_termsAndConditions.Click();
             action.link_BtnAccept.Click();
-            
-
         }
 
         [Then(@"Click on privacy policy link and scroll down, close popup")]
@@ -153,9 +154,7 @@ namespace InslySignupAutomationFramework.Steps
         {
             action.link_PrivacyPolicy.Click();
             driver.FindElement(By.CssSelector("#document-content > p:nth-child(42)")).Click();
-            IWebElement scroll = driver.FindElement(By.CssSelector("body > div:nth-child(6)"));
             IJavaScriptExecutor executor = (IJavaScriptExecutor)driver;
-            executor.ExecuteScript("arguments[0].scrollIntoView();", scroll);
             Thread.Sleep(1000);
             action.icon_ClosePopup.Click();
             IWebElement ele2 = driver.FindElement(By.CssSelector("#field_terms > td:nth-child(2) > div > div > label:nth-child(2)>input"));
@@ -168,6 +167,35 @@ namespace InslySignupAutomationFramework.Steps
             Assert.That(!action.btn_SignUp.GetAttribute("class").Contains("disabled"));
         }
 
+        [Then(@"Press Sign up button")]
+        public void ThenPressSignUpButton()
+        {
+            action.btn_SignUp.Click();
+            driver.SwitchTo().ActiveElement();
+        }
+
+        [Then(@"Wait for instance creation finish")]
+        public void ThenWaitForInstanceCreationFinish()
+        {
+            
+            wait.Until(ExpectedConditions.UrlContains(CompanyName));
+            TestContext.Out.WriteLine("The Company "+CompanyName+" is successfully Registered");
+        }
+
+        [Then(@"Url is same as companyName\.insly\.com")]
+        public void ThenUrlIsSameAsCompanyName_Insly_Com()
+        {
+
+            string RequiredURL = CompanyName.ToLower() + ".int.staging.insly.training";
+            Assert.IsTrue(driver.Url.Contains(RequiredURL),"Url not contain registered conmpany name");
+           
+        }
+
+        [Then(@"User is logged in")]
+        public void ThenUserIsLoggedIn()
+        {
+            Assert.IsTrue(driver.Url.Contains("dashboard"),"User is not get logged in");
+        }
 
         [AfterScenario]
         public void AfterScenario()

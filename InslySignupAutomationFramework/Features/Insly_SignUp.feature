@@ -20,6 +20,11 @@ Scenario: verify Signup Page
 	Then Click on terms and conditions link and agree
 	Then Click on privacy policy link and scroll down, close popup
 	Then Sign up button get Active
+	Then Press Sign up button
+	Then Wait for instance creation finish
+	Then Url is same as companyName.insly.com
+	And User is logged in 
+	
 
 
 	

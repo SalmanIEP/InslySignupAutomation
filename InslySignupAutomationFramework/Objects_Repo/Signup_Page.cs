@@ -159,7 +159,7 @@ namespace InslySignupAutomationFramework.Objects_Repo
         {
             get
             {
-                return this.driver.FindElement(By.CssSelector("body > div:nth-child(6) > div.ui-dialog-titlebar.ui-widget-header.ui-corner-all.ui-helper-clearfix > a"));
+                return this.driver.FindElement(By.CssSelector("body > div:nth-child(4) > div.ui-dialog-titlebar.ui-widget-header.ui-corner-all.ui-helper-clearfix > a"));
             }
 
         }
